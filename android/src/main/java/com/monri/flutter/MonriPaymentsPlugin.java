@@ -12,9 +12,6 @@ import com.monri.android.Monri;
 import com.monri.android.model.ConfirmPaymentParams;
 import com.monri.android.model.MonriApiOptions;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -39,13 +36,11 @@ public class MonriPaymentsPlugin implements FlutterPlugin, MethodCallHandler, Ac
     private MonriPaymentsDelegate delegate;
     private FlutterPluginBinding pluginBinding;
     private ActivityPluginBinding activityBinding;
-    private Application application;
     private Activity activity;
     private Monri monri;
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-
         if (CONFIRM_PAYMENT.equals(call.method)) {
             monriConfirmPayment(call.arguments, result);
         } else {
@@ -68,7 +63,7 @@ public class MonriPaymentsPlugin implements FlutterPlugin, MethodCallHandler, Ac
     }
 
     @Override
-    public void onAttachedToEngine(FlutterPluginBinding binding) {
+    public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         pluginBinding = binding;
     }
 
@@ -85,20 +80,19 @@ public class MonriPaymentsPlugin implements FlutterPlugin, MethodCallHandler, Ac
         activityBinding = binding;
         setup(
                 pluginBinding.getBinaryMessenger(),
-                (Application) pluginBinding.getApplicationContext(),
                 activityBinding.getActivity(),
                 null,
-                activityBinding);
+                activityBinding
+        );
     }
 
     private void setup(
-            final BinaryMessenger messenger, final Application application,
+            final BinaryMessenger messenger,
             final Activity activity,
             final PluginRegistry.Registrar registrar,
             final ActivityPluginBinding activityBinding) {
 
         this.activity = activity;
-        this.application = application;
         this.delegate = new MonriPaymentsDelegate(this.monri);
         channel = new MethodChannel(messenger, CHANNEL);
         channel.setMethodCallHandler(this);
@@ -133,7 +127,6 @@ public class MonriPaymentsPlugin implements FlutterPlugin, MethodCallHandler, Ac
         delegate = null;
         channel.setMethodCallHandler(null);
         channel = null;
-        application = null;
     }
 
     private static void writeMetaData(Context context, String library) {

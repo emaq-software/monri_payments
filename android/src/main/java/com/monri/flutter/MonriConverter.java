@@ -9,7 +9,6 @@ public class MonriConverter {
         this.arguments = arguments;
     }
 
-
     FlutterConfirmPaymentParams process() {
         Map<String, Object> request = (Map<String, Object>) arguments;
 

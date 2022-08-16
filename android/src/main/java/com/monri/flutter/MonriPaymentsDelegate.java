@@ -1,6 +1,7 @@
 package com.monri.flutter;
 
 import android.content.Intent;
+
 import com.monri.android.Monri;
 import com.monri.android.ResultCallback;
 import com.monri.android.model.PaymentResult;
@@ -22,16 +23,15 @@ public class MonriPaymentsDelegate implements PluginRegistry.ActivityResultListe
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (monri != null) {
-            return monri.onPaymentResult(requestCode, data, this);
+        if (this.monri != null) {
+            return this.monri.onPaymentResult(requestCode, data, this);
         }
+
         return false;
     }
 
     @Override
     public void onSuccess(PaymentResult result) {
-//        System.out.println(result.toString());
-
         if (confirmPaymentResult != null) {
             Map<String, Object> response = new HashMap<>();
             Map<String, Object> data = new HashMap<>();
@@ -58,7 +58,7 @@ public class MonriPaymentsDelegate implements PluginRegistry.ActivityResultListe
     public void onError(Throwable throwable) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "error");
-        confirmPaymentResult.success(response);
+        this.confirmPaymentResult.success(response);
     }
 
     public void setMonri(Monri monri) {

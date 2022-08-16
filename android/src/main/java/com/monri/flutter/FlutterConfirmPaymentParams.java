@@ -12,17 +12,22 @@ import java.util.Map;
 
 public class FlutterConfirmPaymentParams {
 
-    private boolean developmentMode;
-    private String authenticityToken;
-    private String clientSecret;
+    private final boolean developmentMode;
+    private final String authenticityToken;
+    private final String clientSecret;
 
-    private FlutterCard card;
-    private FlutterSavedCard savedCard;
+    private final FlutterCard card;
+    private final FlutterSavedCard savedCard;
+    private final FlutterTransactionParams transactionParams;
 
-    private FlutterTransactionParams transactionParams;
-
-    private FlutterConfirmPaymentParams(boolean developmentMode, String authenticityToken, String clientSecret,
-            FlutterCard card, FlutterSavedCard savedCard, FlutterTransactionParams transactionParams) {
+    private FlutterConfirmPaymentParams(
+            boolean developmentMode,
+            String authenticityToken,
+            String clientSecret,
+            FlutterCard card,
+            FlutterSavedCard savedCard,
+            FlutterTransactionParams transactionParams
+    ) {
         this.developmentMode = developmentMode;
         this.authenticityToken = authenticityToken;
         this.clientSecret = clientSecret;
@@ -33,8 +38,7 @@ public class FlutterConfirmPaymentParams {
 
     private PaymentMethodParams paymentMethodParams() {
         if (card != null) {
-            return new Card(card.pan, card.month, card.year, card.cvv).setTokenizePan(card.tokenizePan)
-                    .toPaymentMethodParams();
+            return new Card(card.pan, card.month, card.year, card.cvv).setTokenizePan(card.tokenizePan).toPaymentMethodParams();
         } else {
             return new SavedCard(savedCard.panToken, savedCard.cvv).toPaymentMethodParams();
         }
@@ -70,12 +74,12 @@ public class FlutterConfirmPaymentParams {
     }
 
     private static FlutterCard card(Map<String, Object> cardMap) {
-
         String number = (String) cardMap.get("pan");
         String cvv = (String) cardMap.get("cvv");
         boolean tokenizePan = (Boolean) cardMap.get("tokenize_pan");
         int expYear = (Integer) cardMap.get("expiry_year");
         int expMonth = (Integer) cardMap.get("expiry_month");
+
         return new FlutterCard(number, cvv, expYear, expMonth, tokenizePan);
     }
 
@@ -87,8 +91,7 @@ public class FlutterConfirmPaymentParams {
         return create(map, card((Map<String, Object>) map.get("card")), null);
     }
 
-    private static FlutterConfirmPaymentParams create(Map<String, Object> request, FlutterCard card,
-            FlutterSavedCard savedCard) {
+    private static FlutterConfirmPaymentParams create(Map<String, Object> request, FlutterCard card, FlutterSavedCard savedCard) {
         String authenticityToken = (String) request.get("authenticity_token");
         String clientSecret = (String) request.get("client_secret");
         boolean developmentMode = (boolean) request.get("is_development_mode");
@@ -104,7 +107,8 @@ public class FlutterConfirmPaymentParams {
                 (String) transactionParamsJSON.get("country"),
                 (String) transactionParamsJSON.get("custom_params"),
                 (String) transactionParamsJSON.get("phone"),
-                (Boolean) transactionParamsJSON.get("moto"));
+                (Boolean) transactionParamsJSON.get("moto")
+        );
 
         return new FlutterConfirmPaymentParams(developmentMode, authenticityToken, clientSecret, card, savedCard,
                 transactionParams);
@@ -127,15 +131,16 @@ public class FlutterConfirmPaymentParams {
         Boolean moto;
 
         FlutterTransactionParams(String orderInfo,
-                String email,
-                String fullName,
-                String address,
-                String city,
-                String zip,
-                String country,
-                String customParams,
-                String phone,
-                Boolean moto) {
+                                 String email,
+                                 String fullName,
+                                 String address,
+                                 String city,
+                                 String zip,
+                                 String country,
+                                 String customParams,
+                                 String phone,
+                                 Boolean moto
+        ) {
             this.orderInfo = orderInfo;
             this.email = email;
             this.fullName = fullName;
@@ -156,8 +161,12 @@ public class FlutterConfirmPaymentParams {
         int month;
         boolean tokenizePan;
 
-        FlutterCard(String pan, String cvv, int year,
-                int month, boolean tokenizePan) {
+        FlutterCard(String pan,
+                    String cvv,
+                    int year,
+                    int month,
+                    boolean tokenizePan
+        ) {
             this.pan = pan;
             this.cvv = cvv;
             this.tokenizePan = tokenizePan;
@@ -170,7 +179,9 @@ public class FlutterConfirmPaymentParams {
         String panToken;
         String cvv;
 
-        FlutterSavedCard(String panToken, String cvv) {
+        FlutterSavedCard(String panToken,
+                         String cvv
+        ) {
             this.panToken = panToken;
             this.cvv = cvv;
         }
